@@ -1,0 +1,28 @@
+module LicenseTest where
+
+import Daml.Script
+import License
+
+testCreateAndTransfer: Script()
+testCreateAndTransfer = do 
+    -- allocating test parties
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+
+    -- create contract
+    licenseCid <- submit alice do
+        createCmd License with
+            owner = alice
+            issuer = alice
+            description = "Test Contract"    
+    
+    -- operating a choice
+    newLicenseCid <- submit alice do
+        exerciseCmd licenseCid Transfer with
+          newOwner = bob
+
+    -- Query and assert
+    Some license <- queryContractId bob newLicenseCid
+    assert(license.owner == bob) 
+
+    pure()

@@ -1,0 +1,10 @@
+sdk-version: 3.5.7
+name: DamlInitTests
+source: daml
+version: 0.0.1
+dependencies:
+  - daml-prim
+  - daml-stdlib
+  - daml-script
+data-dependencies:
+  - ../contracts/.daml/dist/DamlInit-0.0.1.dar
