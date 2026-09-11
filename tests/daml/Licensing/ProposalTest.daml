@@ -1,0 +1,25 @@
+module ProposalTest where
+import Daml.Script
+import Licensing.Proposal
+
+testProposalApprove: Script()
+testProposalApprove = do
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+
+    licenseCid <- submit alice do
+        createCmd LicenseContract with
+            owner = alice
+            issuer = alice
+            description = "Test Proposal Contrct"
+    
+    proposalCid <- submit alice do
+        exerciseCmd licenseCid ProposeTransfer with
+            newOwner = bob
+
+    approvedCid <- submit bob do
+        exerciseCmd proposalCid AcceptProposal
+    
+    Some license <- queryContractId bob approvedCid
+    assert(license.owner == bob)
+    pure()

@@ -1,0 +1,25 @@
+module ProposalWithdraw where
+import Daml.Script
+import Licensing.Proposal
+
+testProposalWithdraw: Script()
+testProposalWithdraw = do
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+
+    licenseCid <- submit alice do
+        createCmd LicenseContract with
+            owner = alice
+            issuer = alice
+            description = "Test Proposal Contrct"
+    
+    proposalCid <- submit alice do
+        exerciseCmd licenseCid ProposeTransfer with
+            newOwner = bob
+    
+    withdrawCid <- submit alice do
+        exerciseCmd proposalCid WithdrawProposal
+
+    Some license <- queryContractId alice withdrawCid
+    assert(license.owner == alice)
+    pure()
