@@ -17,11 +17,11 @@ testCreateAndTransfer = do
             description = "Test Contract"    
     
     -- operating a choice
-    newLicenseCid <- submit alice do
+    newLicenseCid <- submit [alice, bob] do 
         exerciseCmd licenseCid Transfer with
-          newOwner = bob
+            newOwner = bob
 
-    -- Query and assert
+    -- Query and asset
     Some license <- queryContractId bob newLicenseCid
     assert(license.owner == bob) 
 

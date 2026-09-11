@@ -5,11 +5,10 @@ template License
         issuer: Party
         description: Text
     where
-        signatory issuer
-        observer owner
+        signatory issuer, owner
         choice Transfer: ContractId License
             with
                 newOwner: Party
-            controller owner 
+            controller owner, newOwner 
             do
                 create this with owner = newOwner
