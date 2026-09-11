@@ -41,7 +41,10 @@ template TransferProposal
         do
             pure()
             
-    choice WithdrawProposal: ()
+    choice WithdrawProposal: ContractId LicenseContract
         controller proposer
         do
-            pure()
+            create LicenseContract with
+                owner = proposer
+                issuer
+                description
