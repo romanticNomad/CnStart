@@ -1,0 +1,47 @@
+module Licensing.Proposal where
+
+template LicenseContract
+    with
+        owner: Party
+        issuer: Party
+        description: Text
+    where
+        signatory owner, issuer
+        choice ProposeTransfer: ContractId TransferProposal
+            with
+                newOwner: Party
+            controller owner
+            do
+                create TransferProposal with 
+                    proposer = owner
+                    recipient = newOwner
+                    issuer
+                    description
+
+template TransferProposal
+  with
+    proposer : Party
+    recipient: Party
+    issuer: Party
+    description: Text
+  where
+    signatory proposer, issuer 
+    observer recipient
+    
+    choice AcceptProposal: ContractId LicenseContract
+        controller recipient
+        do 
+            create LicenseContract with
+                owner = recipient
+                issuer
+                description
+    
+    choice RejectProposal: ()
+        controller recipient
+        do
+            pure()
+            
+    choice WithdrawProposal: ()
+        controller proposer
+        do
+            pure()
