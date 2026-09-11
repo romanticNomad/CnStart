@@ -1,0 +1,14 @@
+module Licensing.License where
+template License
+    with
+        owner: Party
+        issuer: Party
+        description: Text
+    where
+        signatory issuer, owner
+        choice Transfer: ContractId License
+            with
+                newOwner: Party
+            controller owner, newOwner 
+            do
+                create this with owner = newOwner
