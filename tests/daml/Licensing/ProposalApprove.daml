@@ -1,4 +1,4 @@
-module ProposalTest where
+module ProposalApprove where
 import Daml.Script
 import DA.Assert
 import Licensing.Proposal
