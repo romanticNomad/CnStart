@@ -1,5 +1,6 @@
 module ProposalTest where
 import Daml.Script
+import DA.Assert
 import Licensing.Proposal
 
 testProposalApprove: Script()
@@ -21,5 +22,5 @@ testProposalApprove = do
         exerciseCmd proposalCid AcceptProposal
     
     Some license <- queryContractId bob approvedCid
-    assert(license.owner == bob)
+    license.owner === bob
     pure()

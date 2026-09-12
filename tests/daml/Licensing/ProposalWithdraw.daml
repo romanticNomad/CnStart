@@ -1,5 +1,6 @@
 module ProposalWithdraw where
 import Daml.Script
+import DA.Assert
 import Licensing.Proposal
 
 testProposalWithdraw: Script()
@@ -21,5 +22,6 @@ testProposalWithdraw = do
         exerciseCmd proposalCid WithdrawProposal
 
     Some license <- queryContractId alice withdrawCid
-    assert(license.owner == alice)
+
+    license.owner === alice
     pure()

@@ -1,5 +1,5 @@
 module LicenseTest where
-
+import DA.Assert
 import Daml.Script
 import Licensing.License
 
@@ -23,6 +23,6 @@ testCreateAndTransfer = do
 
     -- Query and asset
     Some license <- queryContractId bob newLicenseCid
-    assert(license.owner == bob) 
 
+    license.owner === bob
     pure()
