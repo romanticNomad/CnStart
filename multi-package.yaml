@@ -2,3 +2,4 @@ packages:
   - ./contracts
   - ./tests
   - ./intro-daml-scripts
+  - ./intro-data
