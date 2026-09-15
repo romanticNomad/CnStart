@@ -12,7 +12,7 @@ testProposalApprove = do
         createCmd LicenseContract with
             owner = alice
             issuer = alice
-            description = "Test Proposal Contrct"
+            description = "Test Proposal Contract"
     
     proposalCid <- submit alice do
         exerciseCmd licenseCid ProposeTransfer with
