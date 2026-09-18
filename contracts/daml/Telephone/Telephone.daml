@@ -1,0 +1,19 @@
+module Telephone.Telephone where
+
+template Contact
+    with
+        owner: Party
+        contact: Party
+        addresss: Text
+        telephone: Text
+    where
+        signatory owner
+        observer contact
+
+        choice UpdateTelephone : ContractId Contact
+            with
+                new_telephone: Text
+            controller owner
+            do
+                create this with
+                    telephone = new_telephone
