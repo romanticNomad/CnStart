@@ -1,10 +1,11 @@
 module Telephone.Telephone where
+import Daml.Script
 
 template Contact
     with
         owner: Party
         contact: Party
-        addresss: Text
+        address: Text
         telephone: Text
     where
         signatory owner
@@ -17,3 +18,24 @@ template Contact
             do
                 create this with
                     telephone = new_telephone
+
+testContact = do
+    owner <- allocateParty "Alice"
+    contact <- allocateParty "Bob"
+
+    contactCid <- submit owner do
+        createCmd Contact with
+            owner
+            contact
+            address = "My House"
+            telephone = "1234567890"
+    
+    submitMustFail contact do
+        exerciseCmd contactCid UpdateTelephone with
+            new_telephone = "1592634870"
+
+    newContactId <- submit owner do
+        exerciseCmd contactCid UpdateTelephone with
+            new_telephone = "1472583690"
+
+    pure()        
