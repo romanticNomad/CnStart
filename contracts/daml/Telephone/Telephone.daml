@@ -18,6 +18,14 @@ template Contact
             do
                 create this with
                     telephone = new_telephone
+        
+        choice UpdateAddress : ContractId Contact
+            with
+                new_address: Text
+            controller contact
+            do
+                create this with
+                    address = new_address
 
 testContact = do
     owner <- allocateParty "Alice"
@@ -38,4 +46,8 @@ testContact = do
         exerciseCmd contactCid UpdateTelephone with
             new_telephone = "1472583690"
 
-    pure()        
+    newContrcatId1 <- submit contact do
+        exerciseCmd newContactId UpdateAddress with
+            new_address = "My other address"
+
+    pure() 
