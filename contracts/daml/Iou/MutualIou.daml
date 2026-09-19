@@ -1,0 +1,41 @@
+module Iou.MutualIou where
+import Daml.Script
+
+data Cash = Cash with
+    amount: Decimal
+    currency: Text
+        deriving(Eq, Show)
+
+template Iou
+    with
+        issuer: Party
+        owner: Party
+        cash: Cash
+
+    where
+        signatory issuer, owner
+    
+        choice IouMutualTransfer: ContractId Iou
+            with
+                new_owner: Party
+            controller owner, new_owner
+            do
+                create this with
+                    owner = new_owner
+
+testMutualtransfer = do
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+    charlie <- allocateParty "Charlie"
+
+    iouCid <- submit [alice, bob] do
+        createCmd Iou with
+            issuer = alice
+            owner = bob
+            cash = Cash with
+                amount = 100.00
+                currency = "USD"
+    
+    submit [bob, charlie] do
+        exerciseCmd iouCid IouMutualTransfer with
+            new_owner = charlie
