@@ -24,23 +24,6 @@ template Iou
                 create this with
                     owner = new_owner
 
-testMutualtransfer = do
-    alice <- allocateParty "Alice"
-    bob <- allocateParty "Bob"
-    charlie <- allocateParty "Charlie"
-
-    iouCid <- submit [alice, bob] do
-        createCmd Iou with
-            issuer = alice
-            owner = bob
-            cash = Cash with
-                amount = 100.00
-                currency = "USD"
-    
-    submit [bob, charlie] do
-        exerciseCmd iouCid IouMutualTransfer with
-            new_owner = charlie
-            
 template IouSender
     with
         sender: Party
@@ -59,6 +42,23 @@ template IouSender
                 exercise iouCid IouMutualTransfer with
                     new_owner = receiver
 
+testMutualtransfer = do
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+    charlie <- allocateParty "Charlie"
+
+    iouCid <- submit [alice, bob] do
+        createCmd Iou with
+            issuer = alice
+            owner = bob
+            cash = Cash with
+                amount = 100.00
+                currency = "USD"
+    
+    submit [bob, charlie] do
+        exerciseCmd iouCid IouMutualTransfer with
+            new_owner = charlie
+            
 testIouSender = do
     alice <- allocateParty "Alice"
     bob <- allocateParty "Bob"
