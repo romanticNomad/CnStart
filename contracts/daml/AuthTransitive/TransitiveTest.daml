@@ -1,4 +1,4 @@
-module Transitive.TransitiveTest where
+module AuthTransitive.TransitiveTest where
 import Daml.Script
 
 template NonTransitive
@@ -11,8 +11,8 @@ template NonTransitive
 
     choice TryA
       : ContractId NonTransitive
-      controller partyA, partyB  -- removing partyB from the controller will lead to authorization failiure                                          
-      do                         -- even though alice and bob both became the authorizers of consequence in `TryB`.
+      controller partyB -- , partyA  -- removing partyB from the controller will lead to authorization failiure                                          
+      do                             -- even though alice and bob both became the authorizers of consequence in `TryB`.
         create NonTransitive with
           partyA = partyB
           partyB = partyA
