@@ -1,0 +1,44 @@
+module Transitive.TransitiveTest where
+import Daml.Script
+
+template NonTransitive
+  with
+    partyA : Party
+    partyB : Party
+  where
+    signatory partyA
+    observer partyB
+
+    choice TryA
+      : ContractId NonTransitive
+      controller partyA, partyB  -- removing partyB from the controller will lead to authorization failiure                                          
+      do                         -- even though alice and bob both became the authorizers of consequence in `TryB`.
+        create NonTransitive with
+          partyA = partyB
+          partyB = partyA
+
+    choice TryB
+      : ContractId NonTransitive
+        with
+          other : ContractId NonTransitive
+      controller partyB
+      do
+        exercise other TryA
+
+testTransitive = do
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+
+    nt1 <- submit alice do
+        createCmd NonTransitive with
+            partyA = alice
+            partyB = bob
+
+    nt2 <- submit alice do
+        createCmd NonTransitive with
+            partyA = alice
+            partyB = bob
+
+    submit bob do
+        exerciseCmd nt1 TryB with
+            other = nt2
