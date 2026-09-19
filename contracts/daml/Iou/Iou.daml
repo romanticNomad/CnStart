@@ -15,6 +15,16 @@ template Iou
     where
         signatory issuer, owner
 
+        choice TransferProposal: ContractId IouTransferProposal
+            with
+                new_owner: Party
+            controller owner
+            do
+                assertMsg "new owner cannot be the same owner" (owner /= new_owner)
+                create IouTransferProposal with
+                    iou = this
+                    new_owner
+
 template IouProposal
     with
         iou: Iou
@@ -26,6 +36,30 @@ template IouProposal
             controller iou.owner
             do
                 create iou
+
+template IouTransferProposal
+    with
+        iou: Iou
+        new_owner: Party
+    where
+        signatory (signatory iou) -- same as iou.owner iou.issuer
+        observer new_owner
+
+        choice CancelTransfer: ContractId Iou
+            controller iou.owner
+                do
+                    create iou
+        
+        choice RejectTransfer: ContractId Iou
+            controller new_owner
+                do
+                    create iou
+        
+        choice AccceptTransfer: ContractId Iou
+            controller new_owner
+                do
+                    create iou with
+                        owner = new_owner
 
 testIouTransfer = do
     issuer <- allocateParty "Alice"
