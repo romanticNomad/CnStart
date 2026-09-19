@@ -1,5 +1,6 @@
 module Iou.MutualIou where
 import Daml.Script
+import DA.Assert
 
 data Cash = Cash with
     amount: Decimal
@@ -39,3 +40,43 @@ testMutualtransfer = do
     submit [bob, charlie] do
         exerciseCmd iouCid IouMutualTransfer with
             new_owner = charlie
+            
+template IouSender
+    with
+        sender: Party
+        receiver: Party
+    where
+        signatory receiver
+        observer sender
+
+        nonconsuming choice SendIou: ContractId Iou -- opens up a channel to send multiple IOUs between sender and receiver
+            with iouCid: ContractId Iou
+            controller sender
+            do
+                iou <- fetch iouCid -- fetches the contract ID
+                assert(iou.cash.amount > 0.0)
+                iou.owner === sender
+                exercise iouCid IouMutualTransfer with
+                    new_owner = receiver
+
+testIouSender = do
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+    charlie <- allocateParty "Charlie"
+
+    iouCid <- submit [alice, bob] do
+        createCmd Iou with
+            issuer = alice
+            owner = bob
+            cash = Cash with
+                amount = 100.00
+                currency = "USD"
+    
+    sendCid <- submit charlie do
+        createCmd IouSender with
+            sender = bob
+            receiver = charlie
+
+    submit bob do
+        exerciseCmd sendCid SendIou with
+            iouCid = iouCid
