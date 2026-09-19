@@ -62,16 +62,26 @@ template IouTransferProposal
                         owner = new_owner
 
 testIouTransfer = do
-    issuer <- allocateParty "Alice"
-    owner <- allocateParty "Bob"
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+    charlie <- allocateParty "Charlie"
 
-    iouProposal <- submit issuer do
+    iouProposalCid <- submit alice do
         createCmd IouProposal with
             iou = Iou with
-                issuer
-                owner
+                issuer = alice
+                owner = bob 
                 cash = Cash with
                     amount = 100.00
                     currency = "USD" 
-    submit owner do
-        exerciseCmd iouProposal ProposalAccept
+    iouCid <- submit bob do
+        exerciseCmd iouProposalCid ProposalAccept
+    
+    iouTransferCid <- submit bob do
+        exerciseCmd iouCid TransferProposal with
+            new_owner = charlie
+    
+    submit charlie do
+        exerciseCmd iouTransferCid AccceptTransfer
+    
+    pure()
