@@ -1,0 +1,10 @@
+sdk-version: 3.5.7
+name: CnStart-test
+source: daml
+version: 0.0.1
+dependencies:
+  - daml-prim
+  - daml-stdlib
+  - daml-script
+data-dependencies:
+  - ../main/.daml/dist/CnStart-main-0.0.1.dar
