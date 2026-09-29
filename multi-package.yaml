@@ -3,3 +3,4 @@ packages:
   - ./tests
   - ./intro-daml-scripts
   - ./intro-data
+  - ./intro-compose
