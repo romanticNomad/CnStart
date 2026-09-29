@@ -37,11 +37,11 @@ tradeSetup = do
       symbol = "EUR"
       quantity = 90.0
 
-  return (alice, bob, usdbank, eurbank, usdha, usdhb, eurha, eurhb, usdCid, eurCid)
+  return ((alice, bob, usdbank, eurbank, usdha), (usdhb, eurha, eurhb, usdCid, eurCid))
 
 
 test_trade = do
-  (alice, bob, usdbank, eurbank, usdha, usdhb, eurha, eurhb, usdCid, eurCid) <- tradeSetup
+  ((alice, bob, usdbank, eurbank, usdha), (usdhb, eurha, eurhb, usdCid, eurCid)) <- tradeSetup
 
   -- Alice wants to swap her 100 USD for Bob's 90 EUR
 
